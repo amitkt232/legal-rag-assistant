@@ -1,0 +1,31 @@
+# LLM - Groq runs Llama 3 free and fast
+groq
+langchain
+langchain-community
+langchain-groq
+
+# Embeddings - runs locally, no API, no cost, data stays on machine
+sentence-transformers
+
+# Vector database - local file on your machine
+chromadb
+
+# PDF extraction
+pymupdf
+pytesseract
+Pillow
+
+# API and UI
+fastapi
+uvicorn
+streamlit
+python-multipart
+
+# Evaluation
+ragas
+datasets
+
+# Utilities
+python-dotenv
+pydantic
+uuid
