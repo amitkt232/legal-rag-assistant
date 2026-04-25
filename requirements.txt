@@ -5,6 +5,7 @@ langchain-community
 langchain-groq
 langchain-core
 langchain-text-splitters
+langchain-chroma
 
 # Embeddings - runs locally, no API, no cost, data stays on machine
 sentence-transformers
