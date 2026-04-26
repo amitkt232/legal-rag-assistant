@@ -101,21 +101,40 @@ def check_confidence(session_id: str, question: str) -> float:
 
 def get_answer(question: str, session_id: str) -> dict:
     """
-    Main function — takes a question, returns an answer with citations.
+    Main function — now with input and output guardrails.
 
-    This is the function you describe in every interview:
-    "The user asks a question. We first check retrieval confidence.
-    If below threshold we return an honest refusal.
-    Otherwise we retrieve the top 5 relevant chunks using MMR,
-    format them with page numbers, send to Llama 3 via Groq,
-    and return the answer with the source chunks for verification."
-
-    This is the complete RAG pipeline in one function.
+    Flow:
+    1. Input guardrail — validate and sanitise question
+    2. Confidence check — is retrieval likely to work?
+    3. Retrieve chunks — MMR retrieval
+    4. Generate answer — Llama 3 via Groq
+    5. Output guardrail — validate the answer
+    6. Return result with warnings if any
     """
+
+    # Import here to avoid circular imports
+    from app.core.guardrails import (
+        check_input,
+        sanitise_input,
+        check_output,
+        format_guardrail_response
+    )
 
     start_time = time.time()
 
-    # Step 1: Confidence check — before touching the LLM
+    # ── Step 1: INPUT GUARDRAIL ───────────────────────────
+    # Runs BEFORE anything else — no API calls made yet
+    is_valid, reason = check_input(question)
+
+    if not is_valid:
+        # Blocked at input — return immediately
+        # Zero latency, zero API cost
+        return format_guardrail_response(False, reason)
+
+    # Sanitise the input after validation passes
+    question = sanitise_input(question)
+
+    # ── Step 2: Confidence check ──────────────────────────
     confidence = check_confidence(session_id, question)
 
     if confidence < CONFIDENCE_THRESHOLD:
@@ -128,13 +147,12 @@ def get_answer(question: str, session_id: str) -> dict:
             "sources": [],
             "confidence": round(confidence, 3),
             "latency_seconds": round(time.time() - start_time, 2),
-            "status": "low_confidence"
+            "status": "low_confidence",
+            "warnings": []
         }
 
-    # Step 2: Get retriever for this session
+    # ── Step 3: Retrieve chunks ───────────────────────────
     retriever = get_retriever(session_id)
-
-    # Step 3: Retrieve relevant chunks
     docs = retriever.invoke(question)
 
     if not docs:
@@ -143,35 +161,34 @@ def get_answer(question: str, session_id: str) -> dict:
             "sources": [],
             "confidence": round(confidence, 3),
             "latency_seconds": round(time.time() - start_time, 2),
-            "status": "no_docs"
+            "status": "no_docs",
+            "warnings": []
         }
 
-    # Step 4: Format context with page numbers
+    # ── Step 4: Generate answer ───────────────────────────
     context = format_docs(docs)
-
-    # Step 5: Build prompt and call LLM
-    # Why this chain pattern (LCEL)?
-    # LangChain Expression Language (LCEL) is the modern way to
-    # build chains in LangChain 0.2+. It is:
-    # - More readable than legacy chain classes
-    # - Supports streaming natively
-    # - Easier to debug (each step is explicit)
-    # - Will not be deprecated (unlike RetrievalQA)
     prompt = get_legal_prompt()
     llm = get_llm()
     parser = StrOutputParser()
 
-    # Build the chain using pipe operator
-    # context + question → prompt → llm → parse to string
     chain = prompt | llm | parser
 
-    # Step 6: Generate answer
     answer = chain.invoke({
         "context": context,
         "question": question
     })
 
-    # Step 7: Extract source info for citations
+    # ── Step 5: OUTPUT GUARDRAIL ──────────────────────────
+    # Runs AFTER LLM generates — before showing to user
+    is_valid_output, warnings, cleaned_answer = check_output(
+        answer, "success"
+    )
+
+    if not is_valid_output:
+        # Answer failed output validation — return guardrail message
+        return format_guardrail_response(False, cleaned_answer)
+
+    # ── Step 6: Build final response ──────────────────────
     sources = [
         {
             "page": doc.metadata.get("page_num"),
@@ -181,13 +198,12 @@ def get_answer(question: str, session_id: str) -> dict:
         for doc in docs
     ]
 
-    latency = round(time.time() - start_time, 2)
-
     return {
-        "answer": answer,
+        "answer": cleaned_answer,
         "sources": sources,
         "confidence": round(confidence, 3),
-        "latency_seconds": latency,
+        "latency_seconds": round(time.time() - start_time, 2),
         "chunks_retrieved": len(docs),
-        "status": "success"
+        "status": "success",
+        "warnings": warnings  # empty list if all checks passed
     }
