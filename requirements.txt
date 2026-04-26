@@ -17,6 +17,7 @@ chromadb
 pymupdf
 pytesseract
 Pillow
+pdfplumber
 
 # API and UI
 fastapi
