@@ -11,7 +11,11 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 # 8B: fast response ~1-2 seconds, free tier, handles legal Q&A perfectly
 # 70B: slower, hits rate limits faster, marginal quality gain for our use case
 # In production self-hosted: we would use 70B on dedicated GPU
-GROQ_MODEL = "llama-3.3-70b-versatile"
+# Development model - fast, low token usage, tool calling supported
+GROQ_MODEL = "llama-3.1-8b-instant"
+
+# Production model - best quality (use for final demo and interviews)
+GROQ_MODEL_LARGE = "llama-3.3-70b-versatile"
 
 # Why temperature 0.0?
 # Legal answers must be deterministic and factual.

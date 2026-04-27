@@ -110,15 +110,11 @@ def get_retriever(session_id: str):
         raise ValueError(f"No vector store found for session: {session_id}")
 
     retriever = db.as_retriever(
-        search_type="mmr",
-        search_kwargs={
-            "k": 5,          # return 5 chunks to LLM
-            "fetch_k": 20,   # consider 20 candidates first
-            "lambda_mult": 0.7
-            # lambda_mult: 0 = max diversity, 1 = max relevance
-            # 0.7 = slightly favour relevance over diversity
-            # tuned on our test set in evaluation phase
-        }
-    )
+    search_type="mmr",
+    search_kwargs={
+        "k": 3,        # reduced from 5 to 3
+        "fetch_k": 10, # reduced from 20 to 10
+        "lambda_mult": 0.7})
+    
 
     return retriever
