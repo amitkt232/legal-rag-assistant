@@ -1,0 +1,182 @@
+[
+  {
+    "id": "Q01",
+    "category": "termination",
+    "difficulty": "easy",
+    "question": "What is the notice period for termination for convenience?",
+    "ground_truth": "Either party may terminate the agreement for convenience after giving no less than sixty (60) days written notice to the other party.",
+    "relevant_pages": [14],
+    "notes": "Section 9.2 - Termination for Convenience"
+  },
+  {
+    "id": "Q02",
+    "category": "termination",
+    "difficulty": "medium",
+    "question": "Under what conditions can the agreement be terminated immediately without notice?",
+    "ground_truth": "The agreement can be terminated immediately without notice if the reason for termination is based on ongoing safety issues, an immediate safety event causing property damage or personal injury, or if a cure would be futile.",
+    "relevant_pages": [13, 14],
+    "notes": "Section 9.1 - Termination for Cause"
+  },
+  {
+    "id": "Q03",
+    "category": "payment",
+    "difficulty": "easy",
+    "question": "How many days does the vendor have to submit an invoice after completing services?",
+    "ground_truth": "Vendor shall submit an invoice to RMI within seven (7) days of completion of Services.",
+    "relevant_pages": [7],
+    "notes": "Section 3.2 - Invoicing and Payment"
+  },
+  {
+    "id": "Q04",
+    "category": "payment",
+    "difficulty": "easy",
+    "question": "What is the payment timeline after RMI receives an invoice?",
+    "ground_truth": "Payment is expected to be made within 45 days after RMI receives the invoice from Vendor.",
+    "relevant_pages": [7],
+    "notes": "Section 3.2 - Invoicing and Payment"
+  },
+  {
+    "id": "Q05",
+    "category": "governing_law",
+    "difficulty": "easy",
+    "question": "Which state law governs this agreement?",
+    "ground_truth": "This agreement is governed exclusively by the laws of the state of Texas.",
+    "relevant_pages": [16],
+    "notes": "Section 12.2 - Governing Law"
+  },
+  {
+    "id": "Q06",
+    "category": "governing_law",
+    "difficulty": "medium",
+    "question": "Where must disputes be arbitrated and under which rules?",
+    "ground_truth": "Disputes shall be settled by a single arbitrator in arbitration administered in Houston, Texas, by the American Arbitration Association in accordance with its Commercial Arbitration Rules.",
+    "relevant_pages": [16],
+    "notes": "Section 12.3 - Choice of Venue and Arbitration"
+  },
+  {
+    "id": "Q07",
+    "category": "liability",
+    "difficulty": "medium",
+    "question": "What is RMI's limitation of liability under this agreement?",
+    "ground_truth": "RMI's liability to Vendor will not exceed the amount accounted for within the Vendor Quote or that would otherwise be payable to Vendor in the event of termination. RMI will not be liable for punitive, indirect, incidental, consequential, or special damages.",
+    "relevant_pages": [13],
+    "notes": "Section 6.3 - Limitation of Liability"
+  },
+  {
+    "id": "Q08",
+    "category": "liability",
+    "difficulty": "hard",
+    "question": "What happens to vendor's right to compensation if they breach anti-corruption provisions?",
+    "ground_truth": "In the event Vendor or Vendor's Affiliates breach the anti-corruption article, Vendor forfeits, waives and agrees to forever forego any rights to compensation of any kind whatsoever under this agreement.",
+    "relevant_pages": [11, 12],
+    "notes": "Section 5.3.12 - Breach"
+  },
+  {
+    "id": "Q09",
+    "category": "parties",
+    "difficulty": "easy",
+    "question": "Who are the two parties to this agreement?",
+    "ground_truth": "The two parties are Remote Medicine, Inc., doing business as Remote Medical International (RMI), located in Seattle, WA, and the Vendor whose details are specified in the agreement.",
+    "relevant_pages": [1],
+    "notes": "Agreement introduction"
+  },
+  {
+    "id": "Q10",
+    "category": "insurance",
+    "difficulty": "medium",
+    "question": "What is the minimum insurance coverage amount required per claim for each policy?",
+    "ground_truth": "Each individual insurance policy shall in no event provide coverage of less than $1,000,000 per claim or occurrence.",
+    "relevant_pages": [22, 23],
+    "notes": "Schedule C - Insurance requirements"
+  },
+  {
+    "id": "Q11",
+    "category": "subcontracting",
+    "difficulty": "medium",
+    "question": "Can the vendor subcontract services without permission?",
+    "ground_truth": "Vendor will not subcontract the performance of the Services without the prior written consent of RMI.",
+    "relevant_pages": [6],
+    "notes": "Section 2.7 - Subcontracts"
+  },
+  {
+    "id": "Q12",
+    "category": "availability",
+    "difficulty": "easy",
+    "question": "What are the vendor's availability requirements for responding to service requests?",
+    "ground_truth": "Vendors shall be available and able to respond 24/7 to Requests for Services without exception.",
+    "relevant_pages": [4],
+    "notes": "Section 2.2 - Timing of Services"
+  },
+  {
+    "id": "Q13",
+    "category": "intellectual_property",
+    "difficulty": "hard",
+    "question": "Who owns intellectual property developed by the vendor during service delivery?",
+    "ground_truth": "Any Intellectual Property developed by Vendor in the scope and course of the performance of the Services will be the property of RMI, and Vendor will execute any documents necessary to assign ownership of such Intellectual Property to RMI.",
+    "relevant_pages": [14],
+    "notes": "Section 10.2 - Intellectual Property Rights"
+  },
+  {
+    "id": "Q14",
+    "category": "confidentiality",
+    "difficulty": "medium",
+    "question": "Does the confidentiality obligation survive termination of the agreement?",
+    "ground_truth": "Yes. Vendor's confidentiality obligations will survive the expiration or termination of the Agreement.",
+    "relevant_pages": [15],
+    "notes": "Section 11 - Confidentiality"
+  },
+  {
+    "id": "Q15",
+    "category": "change_of_control",
+    "difficulty": "hard",
+    "question": "What must the vendor do if a change of control event occurs?",
+    "ground_truth": "Vendor must provide RMI written notice within five (5) business days of a Change of Control Event. RMI shall have the right to opt out of the Agreement in the event of a Change of Control Event.",
+    "relevant_pages": [7],
+    "notes": "Section 2.9 - Change of Control Event"
+  },
+  {
+    "id": "Q16",
+    "category": "payment",
+    "difficulty": "medium",
+    "question": "In what currency must all payments be made?",
+    "ground_truth": "All payments under this Agreement shall be in currency of the United States of America.",
+    "relevant_pages": [7],
+    "notes": "Section 3.3 - Amount of Payment"
+  },
+  {
+    "id": "Q17",
+    "category": "guarantee_of_payment",
+    "difficulty": "medium",
+    "question": "What is the maximum charge allowed under the Guarantee of Payment?",
+    "ground_truth": "The maximum charge allowed under the Guarantee of Payment is $100,000.",
+    "relevant_pages": [42],
+    "notes": "Schedule D - Guarantee of Payment"
+  },
+  {
+    "id": "Q18",
+    "category": "audit",
+    "difficulty": "hard",
+    "question": "For how many years must the vendor keep books and records after termination?",
+    "ground_truth": "For a period of four years from the termination of this Agreement, Vendor shall keep proper books, records and accounts of operations.",
+    "relevant_pages": [10, 16],
+    "notes": "Section 5.3.7 and Section 12.9"
+  },
+  {
+    "id": "Q19",
+    "category": "not_in_document",
+    "difficulty": "edge_case",
+    "question": "What is the vendor's hourly rate for services?",
+    "ground_truth": "This information is not specified in the agreement. Rates are determined by individual Vendor Quotes per service request.",
+    "relevant_pages": [],
+    "notes": "Edge case - should return honest refusal"
+  },
+  {
+    "id": "Q20",
+    "category": "not_in_document",
+    "difficulty": "edge_case",
+    "question": "What is the start date of this agreement?",
+    "ground_truth": "The specific start date is not filled in this template agreement. The agreement states it commences on the Execution Date which is left blank as it is a template.",
+    "relevant_pages": [1, 2],
+    "notes": "Edge case - date is blank in template"
+  }
+]
