@@ -34,3 +34,7 @@ datasets
 python-dotenv
 pydantic
 uuid
+
+pytest
+pytest-asyncio
+httpx
