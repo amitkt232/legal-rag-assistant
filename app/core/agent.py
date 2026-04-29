@@ -1,5 +1,3 @@
-# LangGraph 1.x is the current standard - AgentExecutor removed in LangChain 1.x
-# create_react_agent from langgraph.prebuilt is the correct replacement
 from langgraph.prebuilt import create_react_agent
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from app.core.agent_tools import make_tools
@@ -10,34 +8,32 @@ from typing import List
 
 
 # Why LangGraph over old AgentExecutor?
-#
 # LangChain 1.x removed AgentExecutor completely.
-# LangGraph is now the official way to build agents.
-# LangGraph models agents as state machines (graphs):
-# - Nodes = agent or tool execution steps
-# - Edges = routing decisions between steps
-# - State = the full conversation history passed between nodes
+# LangGraph is the official agent framework.
+# create_react_agent builds a prebuilt ReAct graph:
+# LLM node decides tool → Tool node executes →
+# Result flows back → LLM decides if done
 #
-# create_react_agent is a prebuilt graph that handles
-# the common ReAct pattern automatically:
-# User input → LLM decides tool → Tool executes →
-# LLM sees result → Decides if done or needs another tool
+# System prompt injection: In LangGraph 1.1.9
+# neither 'prompt' nor 'state_modifier' parameters
+# are accepted by create_react_agent.
+# The correct approach is to prepend a SystemMessage
+# to the messages list when invoking — this is the
+# standard pattern for injecting system context.
 #
 # Interview answer for Strides Q18 "What is LangGraph?":
 # "LangGraph is LangChain's framework for building stateful
-# multi-actor applications as graphs. We used it in production
-# because LangChain 1.x removed AgentExecutor in favour of
-# LangGraph. Our agent uses create_react_agent which builds
-# a prebuilt ReAct graph — the LLM node decides which tool
-# to call, the tool node executes it, and the result flows
-# back to the LLM node. This graph structure makes the agent
-# debuggable, observable, and easy to extend with new nodes."
+# multi-actor applications as graphs. We used it because
+# LangChain 1.x removed AgentExecutor in favour of LangGraph.
+# Our agent uses create_react_agent — a prebuilt ReAct graph
+# where the LLM node decides which tool to call, the tool
+# node executes it, and results flow through the graph state."
 
 AGENT_SYSTEM_PROMPT = """You are a legal contract assistant.
 
 You have three tools that retrieve raw contract text:
 1. retrieve_and_answer — for specific clause questions
-2. summarise_contract — for overview/summary requests  
+2. summarise_contract — for overview/summary requests
 3. flag_contract_risks — for risk and red flag questions
 
 WORKFLOW:
@@ -55,26 +51,16 @@ def create_legal_agent(session_id: str):
     """
     Creates a LangGraph ReAct agent for legal contract analysis.
 
-    Why create_react_agent?
-    It is the simplest correct API in LangGraph 1.x.
-    It builds a complete agent graph with:
-    - LLM node: decides which tool to call
-    - Tool node: executes the chosen tool
-    - Conditional edges: loop back if more tools needed
-    - END edge: when LLM decides answer is complete
-
-    state_modifier = our system prompt injected into
-    the graph's initial state. This is the LangGraph 1.x
-    equivalent of the system message in the old prompt template.
+    No system prompt parameter passed here — LangGraph 1.1.9
+    does not accept 'prompt' or 'state_modifier'.
+    System prompt is injected as SystemMessage in invoke().
     """
-
     llm = get_llm()
     tools = make_tools(session_id)
 
     agent = create_react_agent(
         model=llm,
-        tools=tools,
-        prompt=AGENT_SYSTEM_PROMPT
+        tools=tools
     )
 
     return agent
@@ -88,23 +74,17 @@ def get_agent_answer(
     """
     Main entry point — takes a question, returns an answer.
 
-    How LangGraph agent execution works:
-    1. We call agent.invoke() with a messages list
-    2. LangGraph runs the graph:
-       - LLM node sees the question + system prompt
-       - LLM returns a tool call (structured JSON)
-       - Tool node executes the tool
-       - Result added to messages state
-       - LLM node sees tool result
-       - LLM decides if answer is complete
-       - If yes → END, if no → call another tool
-    3. Final messages list returned
-    4. We extract the last AIMessage as the answer
+    System prompt is prepended as SystemMessage in the
+    messages list before invoking the agent graph.
+    This is the correct pattern for LangGraph 1.1.9.
 
-    Why extract the last AIMessage?
-    LangGraph returns the full message history including
-    tool calls and tool results. The final answer is always
-    the last AIMessage in the list.
+    How the graph executes:
+    1. SystemMessage sets context and tool routing rules
+    2. HumanMessage contains the user question
+    3. LLM decides which tool to call
+    4. Tool retrieves raw contract text
+    5. LLM generates cited answer from tool output
+    6. We extract the last AIMessage as final answer
     """
 
     if chat_history is None:
@@ -112,7 +92,7 @@ def get_agent_answer(
 
     start_time = time.time()
 
-    # Input guardrail — before touching the agent
+    # Input guardrail
     is_valid, reason = check_input(question)
     if not is_valid:
         return format_guardrail_response(False, reason)
@@ -122,18 +102,20 @@ def get_agent_answer(
     try:
         agent = create_legal_agent(session_id)
 
-        # Build messages list for LangGraph
-        # LangGraph uses messages state — full conversation history
-        messages = chat_history + [HumanMessage(content=question)]
+        # Prepend SystemMessage to inject system prompt
+        # This is the correct LangGraph 1.1.9 pattern
+        messages = (
+            [SystemMessage(content=AGENT_SYSTEM_PROMPT)]
+            + chat_history
+            + [HumanMessage(content=question)]
+        )
 
-        # Invoke the graph
         result = agent.invoke(
-    {"messages": messages},
-    config={"recursion_limit": 10})
+            {"messages": messages},
+            config={"recursion_limit": 10}
+        )
 
-        # Extract final answer from result messages
-        # LangGraph returns all messages including tool calls
-        # The last AIMessage with content is the final answer
+        # Extract final answer — last AIMessage with string content
         final_answer = ""
         for message in reversed(result["messages"]):
             if (
@@ -146,14 +128,15 @@ def get_agent_answer(
                 break
 
         if not final_answer:
-            final_answer = "The agent could not generate a response. Please try again."
-
-        latency = round(time.time() - start_time, 2)
+            final_answer = (
+                "The agent could not generate a response. "
+                "Please try again or switch to Direct RAG mode."
+            )
 
         return {
             "answer": final_answer,
             "sources": [],
-            "latency_seconds": latency,
+            "latency_seconds": round(time.time() - start_time, 2),
             "status": "success",
             "warnings": [],
             "agent_used": True
