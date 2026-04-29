@@ -1,0 +1,16 @@
+# Never include these in Docker image
+.env
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.git/
+.gitignore
+chroma_db/
+data/contracts/
+*.pdf
+evaluation/results.json
+.pytest_cache/
+tests/
+README.md
+streamlit_app.py
