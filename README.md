@@ -59,6 +59,7 @@ Legal contracts contain confidential client data. Using a fully local stack (loc
 ---
 
 ## 📁 Project Structure
+
 legal-rag-assistant/
 │
 ├── app/
