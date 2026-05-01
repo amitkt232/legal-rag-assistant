@@ -1,4 +1,11 @@
-# LLM - Groq runs Llama 3 free and fast
+# ── Force CPU-only torch BEFORE everything else ──────────
+# This prevents sentence-transformers from pulling GPU torch
+# which brings 2GB+ of NVIDIA CUDA packages
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.1.0+cpu
+torchvision==0.16.0+cpu
+
+# ── LLM ──────────────────────────────────────────────────
 groq
 langchain
 langchain-community
@@ -8,33 +15,34 @@ langchain-text-splitters
 langchain-chroma
 langchain-huggingface
 
-# Embeddings - runs locally, no API, no cost, data stays on machine
+# ── Embeddings (local, CPU only) ─────────────────────────
 sentence-transformers
 
-# Vector database - local file on your machine
+# ── Vector database ───────────────────────────────────────
 chromadb
 
-# PDF extraction
+# ── PDF extraction ────────────────────────────────────────
 pymupdf
 pytesseract
 Pillow
 pdfplumber
 
-# API and UI
+# ── API and UI ────────────────────────────────────────────
 fastapi
 uvicorn
 streamlit
 python-multipart
 
-# Evaluation
+# ── Evaluation ───────────────────────────────────────────
 ragas
 datasets
 
-# Utilities
-python-dotenv
-pydantic
-uuid
-
+# ── Testing ───────────────────────────────────────────────
 pytest
 pytest-asyncio
 httpx
+
+# ── Utilities ─────────────────────────────────────────────
+python-dotenv
+pydantic
+openai
