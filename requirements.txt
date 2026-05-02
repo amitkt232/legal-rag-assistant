@@ -1,28 +1,28 @@
-# ── Force CPU-only torch ──────────────────────────────────
+# ── Force CPU-only torch first ────────────────────────────
 --extra-index-url https://download.pytorch.org/whl/cpu
 torch==2.1.0+cpu
 
-# ── LLM ──────────────────────────────────────────────────
-groq==0.11.0
-langchain==0.3.25
-langchain-community==0.3.23
-langchain-groq==0.2.5
-langchain-core==0.3.59
-langchain-text-splitters==0.3.8
-langchain-chroma==0.2.4
-langchain-huggingface==0.1.2
+# ── LLM and LangChain ────────────────────────────────────
+groq
+langchain
+langchain-community
+langchain-groq
+langchain-core
+langchain-text-splitters
+langchain-chroma
+langchain-huggingface
 
-# ── Embeddings ────────────────────────────────────────────
+# ── Agent ─────────────────────────────────────────────────
+langgraph
+langgraph-prebuilt
+
+# ── Embeddings — pin to stable versions ──────────────────
 sentence-transformers==3.3.1
 transformers==4.46.3
 tokenizers==0.20.3
 
-# ── Agent ─────────────────────────────────────────────────
-langgraph==0.2.60
-langgraph-prebuilt==0.1.7
-
 # ── Vector database ───────────────────────────────────────
-chromadb==0.5.23
+chromadb
 
 # ── PDF extraction ────────────────────────────────────────
 pymupdf==1.24.14
@@ -31,20 +31,20 @@ Pillow==10.4.0
 pdfplumber==0.11.4
 
 # ── API ───────────────────────────────────────────────────
-fastapi==0.115.6
-uvicorn==0.32.1
-python-multipart==0.0.12
+fastapi
+uvicorn
+python-multipart
 
 # ── Evaluation ───────────────────────────────────────────
-ragas==0.2.6
-datasets==3.2.0
+ragas
+datasets
 
 # ── Testing ───────────────────────────────────────────────
-pytest==8.3.4
-pytest-asyncio==0.24.0
-httpx==0.27.2
+pytest
+pytest-asyncio
+httpx
 
 # ── Utilities ─────────────────────────────────────────────
-python-dotenv==1.0.1
-pydantic==2.10.4
-openai==1.59.4
+python-dotenv
+pydantic
+openai
